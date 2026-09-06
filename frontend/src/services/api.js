@@ -538,6 +538,18 @@ const fallbackProducts = [
 ];
 
 // Inventory APIs
+export const getInventoryApi = async (productId) => {
+  try {
+    const response = await api.get(`/inventory/${productId}`);
+    return response.data;
+  } catch (e) {
+    return {
+      productId,
+      availableQuantity: 0
+    };
+  }
+};
+
 export const getAllInventoryApi = async () => {
   try {
     const response = await api.get('/inventory');
@@ -547,54 +559,86 @@ export const getAllInventoryApi = async () => {
   }
 };
 
-export const getInventoryApi = async (productId) => {
-  try {
-    const response = await api.get(`/inventory/${productId}`);
-    return response.data;
-  } catch (e) {
-    return { productId, availableQuantity: 0 };
-  }
-};
-
-// Product APIs
 export const getProducts = async (params = {}) => {
-  const [prodsRes, invList] = await Promise.all([
-    api.get('/products', { params }).then(r => r.data || []).catch(() => []),
-    getAllInventoryApi()
-  ]);
+  try {
+    const response = await api.get('/products', { params });
 
-  const invMap = new Map();
-  if (Array.isArray(invList)) {
-    invList.forEach(inv => invMap.set(Number(inv.productId), Number(inv.availableQuantity)));
+    if (Array.isArray(response.data) && response.data.length > 0) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log('Backend unavailable. Using frontend product catalog.');
   }
 
-  return prodsRes.map(p => {
-    const stockQty = invMap.has(Number(p.id)) ? invMap.get(Number(p.id)) : 0;
-    return {
-      ...p,
-      availableQuantity: stockQty,
-      stockQuantity: stockQty,
-      stock: stockQty
-    };
-  });
+  // Frontend-only fallback catalog
+  let products = [...fallbackProducts];
+
+  // Category filter
+  if (params.category) {
+    const category = String(params.category).toUpperCase();
+
+    products = products.filter(
+      p => p.categoryName?.toUpperCase() === category
+    );
+  }
+
+  // Search filter
+  if (params.keyword || params.search) {
+    const keyword = String(params.keyword || params.search).toLowerCase();
+
+    products = products.filter(
+      p =>
+        p.name?.toLowerCase().includes(keyword) ||
+        p.brand?.toLowerCase().includes(keyword) ||
+        p.categoryName?.toLowerCase().includes(keyword)
+    );
+  }
+
+  return products.map(product => ({
+    ...product,
+    availableQuantity: product.stockQuantity,
+    stockQuantity: product.stockQuantity,
+    stock: product.stockQuantity
+  }));
 };
 
 export const getProductById = async (id) => {
-  const [prodRes, invData] = await Promise.all([
-    api.get(`/products/${id}`).then(r => r.data).catch(() => null),
-    getInventoryApi(id)
-  ]);
+  try {
+    const [prodRes, invData] = await Promise.all([
+      api.get(`/products/${id}`).then(r => r.data),
+      getInventoryApi(id)
+    ]);
 
-  if (!prodRes) {
+    if (prodRes) {
+      const stockQty = invData
+        ? Number(invData.availableQuantity ?? 0)
+        : 0;
+
+      return {
+        ...prodRes,
+        availableQuantity: stockQty,
+        stockQuantity: stockQty,
+        stock: stockQty
+      };
+    }
+  } catch (error) {
+    console.log('Backend unavailable. Using frontend product catalog.');
+  }
+
+  // Frontend fallback
+  const product = fallbackProducts.find(
+    p => Number(p.id) === Number(id)
+  );
+
+  if (!product) {
     throw new Error('Product not found');
   }
 
-  const stockQty = invData ? Number(invData.availableQuantity ?? 0) : 0;
   return {
-    ...prodRes,
-    availableQuantity: stockQty,
-    stockQuantity: stockQty,
-    stock: stockQty
+    ...product,
+    availableQuantity: product.stockQuantity,
+    stockQuantity: product.stockQuantity,
+    stock: product.stockQuantity
   };
 };
 
