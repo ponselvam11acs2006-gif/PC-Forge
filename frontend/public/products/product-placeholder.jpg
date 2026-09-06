@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0c10"/>
+      <stop offset="100%" stop-color="#161b26"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect x="200" y="150" width="400" height="300" rx="16" fill="#121620" stroke="#8a99ad" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="400" y="290" font-family="Orbitron, Arial, sans-serif" font-size="32" font-weight="900" fill="#00f0ff" text-anchor="middle">PCFORGE</text>
+  <text x="400" y="330" font-family="Rajdhani, Arial, sans-serif" font-size="20" font-weight="700" fill="#8a99ad" text-anchor="middle">Product Hardware Image Asset</text>
+</svg>

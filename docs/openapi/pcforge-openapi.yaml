@@ -1,0 +1,206 @@
+openapi: 3.0.3
+info:
+  title: PCForge Microservices API Documentation
+  description: Complete OpenAPI specification for PCForge Gaming PC Marketplace & Custom PC Builder.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: API Gateway
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad request / validation error
+
+  /api/auth/login:
+    post:
+      summary: User login
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated successfully with JWT token
+        '401':
+          description: Invalid credentials
+
+  /api/products:
+    get:
+      summary: Fetch product catalog with filtering, sorting, and pagination
+      tags: [Product]
+      parameters:
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: brand
+          in: query
+          schema: { type: string }
+        - name: minPrice
+          in: query
+          schema: { type: number }
+        - name: maxPrice
+          in: query
+          schema: { type: number }
+        - name: page
+          in: query
+          schema: { type: integer, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 12 }
+      responses:
+        '200':
+          description: List of products returned
+    post:
+      summary: Create new product (Admin)
+      tags: [Product]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDTO'
+      responses:
+        '201':
+          description: Product created successfully
+
+  /api/products/{id}:
+    get:
+      summary: Get product by ID
+      tags: [Product]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Product details
+        '404':
+          description: Product not found
+
+  /api/inventory/reserve:
+    post:
+      summary: Reserve inventory stock for order
+      tags: [Inventory]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockReservationRequest'
+      responses:
+        '200':
+          description: Stock reserved successfully
+        '409':
+          description: Insufficient stock (Conflict)
+
+  /api/cart/{userId}:
+    get:
+      summary: Get user cart
+      tags: [Cart]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Cart items and total calculations
+
+  /api/orders:
+    post:
+      summary: Create order and initiate payment & inventory reservation
+      tags: [Order]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Order created successfully
+
+  /api/pc-builder/validate:
+    post:
+      summary: Validate custom PC component compatibility
+      tags: [PC Builder]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PCBuildValidationRequest'
+      responses:
+        '200':
+          description: Compatibility report returned
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        username: { type: string }
+        email: { type: string }
+        password: { type: string }
+        fullName: { type: string }
+    LoginRequest:
+      type: object
+      properties:
+        email: { type: string }
+        password: { type: string }
+    ProductDTO:
+      type: object
+      properties:
+        name: { type: string }
+        brand: { type: string }
+        categoryId: { type: integer }
+        description: { type: string }
+        price: { type: number }
+        discountPrice: { type: number }
+        imageUrl: { type: string }
+        stockQuantity: { type: integer }
+    StockReservationRequest:
+      type: object
+      properties:
+        productId: { type: integer }
+        quantity: { type: integer }
+    CreateOrderRequest:
+      type: object
+      properties:
+        userId: { type: integer }
+        shippingAddress: { type: string }
+        paymentMethod: { type: string }
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              productId: { type: integer }
+              quantity: { type: integer }
+    PCBuildValidationRequest:
+      type: object
+      properties:
+        cpuId: { type: integer }
+        motherboardId: { type: integer }
+        ramId: { type: integer }
+        gpuId: { type: integer }
+        storageId: { type: integer }
+        psuId: { type: integer }
+        cabinetId: { type: integer }
+        coolerId: { type: integer }

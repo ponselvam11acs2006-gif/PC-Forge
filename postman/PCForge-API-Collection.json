@@ -1,0 +1,94 @@
+{
+	"info": {
+		"_postman_id": "pcforge-api-collection-id",
+		"name": "PCForge API Collection",
+		"description": "Complete API test collection for PCForge Microservices Architecture",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"gamer123\",\n  \"email\": \"gamer@pcforge.com\",\n  \"password\": \"Password123!\",\n  \"fullName\": \"Alex Gamer\"\n}"
+						},
+						"url": {"raw": "http://localhost:8080/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "auth", "register"]}
+					}
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"gamer@pcforge.com\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {"raw": "http://localhost:8080/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "auth", "login"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "http://localhost:8080/api/products", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "products"]}
+					}
+				},
+				{
+					"name": "Search Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "http://localhost:8080/api/products/search?keyword=RTX", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "products", "search"], "query": [{"key": "keyword", "value": "RTX"}]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Inventory & Business Rule Tests",
+			"item": [
+				{
+					"name": "Reserve Stock (Mouse - 3 items)",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": 111,\n  \"quantity\": 3\n}"
+						},
+						"url": {"raw": "http://localhost:8080/api/inventory/reserve", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "inventory", "reserve"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "PC Builder",
+			"item": [
+				{
+					"name": "Validate PC Compatibility",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cpuId\": 101,\n  \"motherboardId\": 105,\n  \"ramId\": 107,\n  \"gpuId\": 103,\n  \"storageId\": 108,\n  \"psuId\": 109,\n  \"cabinetId\": 110\n}"
+						},
+						"url": {"raw": "http://localhost:8080/api/pc-builder/validate", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "pc-builder", "validate"]}
+					}
+				}
+			]
+		}
+	]
+}

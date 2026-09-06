@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" width="400" height="320">
+      <rect width="100%" height="100%" fill="#ffffff" />
+      
+      <rect x="110" y="40" width="180" height="230" rx="12" fill="#0068b5" stroke="#00c7fd" stroke-width="3"/>
+      <text x="130" y="85" font-family="Arial, sans-serif" font-weight="400" font-size="22" fill="#ffffff">intel</text>
+      <text x="130" y="145" font-family="Arial, sans-serif" font-weight="900" font-size="48" fill="#ffffff">CORE</text>
+      <rect x="130" y="175" width="45" height="40" rx="4" fill="#00c7fd"/>
+      <text x="152" y="204" font-family="Arial, sans-serif" font-weight="900" font-size="28" fill="#0068b5" text-anchor="middle">i5</text>
+      <text x="200" y="250" font-family="Arial, sans-serif" font-weight="700" font-size="13" fill="#ffffff" text-anchor="middle">13TH GEN PROCESSOR</text>
+    
+    </svg>
