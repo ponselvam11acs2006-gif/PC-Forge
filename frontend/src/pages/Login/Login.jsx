@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Cpu, Lock, Mail, ArrowRight, Eye, EyeOff, ShieldCheck, Zap, HardDrive, Tv, Fan, AlertCircle } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,19 +13,16 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      await login(email, password);
-      navigate('/');
-    } catch (err) {
-      setError(err.message || 'Invalid email or password. Please verify your credentials.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Frontend Demo Mode
+  setTimeout(() => {
+    setLoading(false);
+    navigate('/');
+  }, 600);
+};
 
   return (
     <div style={{
